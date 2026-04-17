@@ -1,5 +1,5 @@
-# Caloryx
 
+# Caloryx
 `Caloryx` is a course project in C++ for binary storage of users, categories, and food products with restored domain modules such as `Admin`, `User`, `Food`, `Category`, `Meal`, `NutritionPlan`, `Report`, and `Settings`.
 
 ## What Was Implemented
@@ -186,3 +186,4 @@ Additional documentation:
 - [backend_checklist.md](/C:/Users/Dima/Desktop/Kursa/docs/backend_checklist.md)
 - [use_cases.md](/C:/Users/Dima/Desktop/Kursa/docs/use_cases.md)
 - [manual_testing.md](/C:/Users/Dima/Desktop/Kursa/docs/manual_testing.md)
+
