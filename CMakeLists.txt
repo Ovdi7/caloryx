@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(caloryx_backend
     src/Admin/admin.cpp
+    src/Calculator/CalorieCalculator.cpp
     src/Category/category.cpp
     src/Food/food.cpp
     src/FoodsDatabase/FoodsDatabase.cpp
@@ -17,8 +18,6 @@ add_library(caloryx_backend
     src/Services/AuthService.cpp
     src/Services/CatalogService.cpp
     src/Storage/AccountStorage.cpp
-    src/Storage/CategoryStorage.cpp
-    src/Storage/FoodStorage.cpp
     src/User/user.cpp
 )
 

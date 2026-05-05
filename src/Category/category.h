@@ -1,20 +1,10 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "../Models/CategoryData.h"
 
-class Category {
-private:
-    CategoryData data;
-
-public:
-    Category();
-    explicit Category(const CategoryData& data);
-    Category(int id, const std::string& name);
-
-    CategoryData toData() const;
-
-    int getId() const;
-    std::string getName() const;
-};
+std::string getCategoryName(Category category);
+std::vector<Category> getAllCategories();
+bool isValidCategory(int id);

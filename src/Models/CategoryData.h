@@ -1,9 +1,9 @@
 #pragma once
 
-struct CategoryData {
-    static const int NameSize = 48;
-
-    int id;
-    char name[NameSize];
-    int isDeleted;
+enum class Category {
+    Fruits = 1,
+    Protein = 2,
+    Grains = 3,
+    Dairy = 4,
+    Nuts = 5
 };
