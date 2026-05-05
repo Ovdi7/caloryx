@@ -7,3 +7,11 @@ enum class Category {
     Dairy = 4,
     Nuts = 5
 };
+
+struct CategoryData {
+    static const int NameSize = 64;
+
+    int id;
+    char name[NameSize];
+    int isDeleted;
+};
