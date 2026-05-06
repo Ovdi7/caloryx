@@ -162,7 +162,7 @@ Important note:
 
 ```powershell
 cd C:\Users\Dima\Desktop\Kursa
-g++ -std=c++17 -O2 -Wall -Wextra -pedantic src\main.cpp src\Admin\admin.cpp src\Category\category.cpp src\Food\food.cpp src\FoodsDatabase\FoodsDatabase.cpp src\Meal\meal.cpp src\Plan\plan.cpp src\Report\report.cpp src\Settings\settings.cpp src\User\user.cpp src\Services\AuthService.cpp src\Services\CatalogService.cpp src\Storage\AccountStorage.cpp src\Storage\CategoryStorage.cpp src\Storage\FoodStorage.cpp -o caloryx.exe
+g++ -std=c++17 -O2 -Wall -Wextra -pedantic src\main.cpp src\Admin\admin.cpp src\Category\category.cpp src\Food\food.cpp src\FoodsDatabase\FoodsDatabase.cpp src\Meal\meal.cpp src\Plan\plan.cpp src\Report\report.cpp src\Settings\settings.cpp src\User\user.cpp src\Services\AuthService.cpp src\Services\CatalogService.cpp src\Storage\AccountStorage.cpp src\Models\CalorieCalculator.cpp -o caloryx.exe
 .\caloryx.exe
 ```
 
@@ -186,4 +186,3 @@ Additional documentation:
 - [backend_checklist.md](/C:/Users/Dima/Desktop/Kursa/docs/backend_checklist.md)
 - [use_cases.md](/C:/Users/Dima/Desktop/Kursa/docs/use_cases.md)
 - [manual_testing.md](/C:/Users/Dima/Desktop/Kursa/docs/manual_testing.md)
-

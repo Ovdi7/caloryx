@@ -1,4 +1,6 @@
 #include "FoodsDatabase.h"
+#include "../Models/FoodData.h"
+#include "../Models/CategoryData.h"
 
 FoodDatabase::FoodDatabase() : catalogService(nullptr) {
 }
@@ -29,9 +31,11 @@ std::vector<Category> FoodDatabase::getCategories() const {
         return result;
     }
 
-    for (const CategoryData& category : catalogService->getAllCategories()) {
-        result.push_back(Category(category));
-    }
+    result.push_back(Category::Fruits);
+    result.push_back(Category::Protein);
+    result.push_back(Category::Grains);
+    result.push_back(Category::Dairy);
+    result.push_back(Category::Nuts);
 
     return result;
 }

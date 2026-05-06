@@ -3,25 +3,15 @@
 #include <stdexcept>
 
 #include "../Common/FixedText.h"
+#include "../Category/category.h"
 
-CatalogService::CatalogService(FoodStorage& foodStorage, CategoryStorage& categoryStorage)
-    : foodStorage(foodStorage), categoryStorage(categoryStorage) {
+CatalogService::CatalogService(FoodStorage& foodStorage)
+    : foodStorage(foodStorage) {
 }
 
 void CatalogService::ensureSeedData() const {
-    if (!categoryStorage.fileExists()) {
-        categoryStorage.initializeEmpty();
-    }
     if (!foodStorage.fileExists()) {
         foodStorage.initializeEmpty();
-    }
-
-    if (categoryStorage.getAll().empty()) {
-        addCategory(1, "Fruits");
-        addCategory(2, "Protein");
-        addCategory(3, "Grains");
-        addCategory(4, "Dairy");
-        addCategory(5, "Nuts");
     }
 
     if (foodStorage.getAll().empty()) {
@@ -38,53 +28,12 @@ std::vector<FoodData> CatalogService::getAllFoods() const {
     return foodStorage.getAll();
 }
 
-std::vector<CategoryData> CatalogService::getAllCategories() const {
-    return categoryStorage.getAll();
-}
-
 FoodData CatalogService::getFoodById(int id) const {
     FoodData food{};
     if (!foodStorage.findById(id, food)) {
         throw std::runtime_error("Food not found.");
     }
     return food;
-}
-
-CategoryData CatalogService::getCategoryById(int id) const {
-    CategoryData category{};
-    if (!categoryStorage.findById(id, category)) {
-        throw std::runtime_error("Category not found.");
-    }
-    return category;
-}
-
-void CatalogService::addCategory(int id, const std::string& name) const {
-    if (name.empty()) {
-        throw std::runtime_error("Category name is required.");
-    }
-
-    CategoryData existing{};
-    if (categoryStorage.findById(id, existing)) {
-        throw std::runtime_error("Category ID already exists.");
-    }
-
-    CategoryData category{};
-    category.id = id;
-    copyText(category.name, CategoryData::NameSize, name);
-    category.isDeleted = 0;
-    categoryStorage.add(category);
-}
-
-void CatalogService::removeCategory(int id) const {
-    for (const FoodData& food : foodStorage.getAll()) {
-        if (food.categoryId == id) {
-            throw std::runtime_error("Category is used by foods and cannot be deleted.");
-        }
-    }
-
-    if (!categoryStorage.remove(id)) {
-        throw std::runtime_error("Category not found.");
-    }
 }
 
 void CatalogService::addFood(
@@ -99,6 +48,9 @@ void CatalogService::addFood(
     if (name.empty()) {
         throw std::runtime_error("Food name is required.");
     }
+    if (name.length() >= FoodData::NameSize) {
+        throw std::runtime_error("Food name is too long.");
+    }
     if (caloriesPer100g < 0 || proteinsPer100g < 0.0 || fatsPer100g < 0.0 || carbsPer100g < 0.0) {
         throw std::runtime_error("Food nutrition values cannot be negative.");
     }
@@ -108,8 +60,7 @@ void CatalogService::addFood(
         throw std::runtime_error("Food ID already exists.");
     }
 
-    CategoryData category{};
-    if (!categoryStorage.findById(categoryId, category)) {
+    if (!isValidCategory(categoryId)) {
         throw std::runtime_error("Category does not exist.");
     }
 
@@ -135,14 +86,19 @@ void CatalogService::updateFood(
     double carbsPer100g,
     int categoryId
 ) const {
-    CategoryData category{};
-    if (!categoryStorage.findById(categoryId, category)) {
+    if (!isValidCategory(categoryId)) {
         throw std::runtime_error("Category does not exist.");
     }
 
     FoodData food{};
     if (!foodStorage.findById(id, food)) {
         throw std::runtime_error("Food not found.");
+    }
+    if (name.empty()) {
+        throw std::runtime_error("Food name is required.");
+    }
+    if (name.length() >= FoodData::NameSize) {
+        throw std::runtime_error("Food name is too long.");
     }
 
     copyText(food.name, FoodData::NameSize, name);

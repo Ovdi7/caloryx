@@ -11,18 +11,17 @@
 #include "FoodsDatabase/FoodsDatabase.h"
 #include "Models/AccountData.h"
 #include "Models/AccountRole.h"
+#include "Models/CalorieCalculator.h"
 #include "Models/CategoryData.h"
 #include "Models/FoodData.h"
 #include "User/user.h"
 #include "Services/AuthService.h"
 #include "Services/CatalogService.h"
 #include "Storage/AccountStorage.h"
-#include "Storage/CategoryStorage.h"
 #include "Storage/FoodStorage.h"
 
 namespace {
 const char* AccountsPath = "data/accounts.dat";
-const char* CategoriesPath = "data/categories.dat";
 const char* FoodsPath = "data/foods.dat";
 
 int readInt(const std::string& label) {
@@ -71,7 +70,7 @@ void showFoods(const FoodDatabase& database) {
 void showCategories(const FoodDatabase& database) {
     const std::vector<Category> categories = database.getCategories();
     for (const Category& category : categories) {
-        std::cout << "Category #" << category.getId() << " - " << category.getName() << '\n';
+        std::cout << "Category #" << static_cast<int>(category) << " - " << getCategoryName(category) << '\n';
     }
 }
 
@@ -94,11 +93,9 @@ void runAdminMenu(const AccountData& account, CatalogService& catalogService, Fo
                   << "Logged in as: " << admin.getDisplayName() << " (" << admin.getLogin() << ")\n"
                   << "1. Show foods\n"
                   << "2. Show categories\n"
-                  << "3. Add category\n"
-                  << "4. Add food\n"
-                  << "5. Update food\n"
-                  << "6. Delete food\n"
-                  << "7. Delete category\n"
+                  << "3. Add food\n"
+                  << "4. Update food\n"
+                  << "5. Delete food\n"
                   << "0. Logout\n";
 
         const int choice = readInt("Choose action: ");
@@ -111,14 +108,6 @@ void runAdminMenu(const AccountData& account, CatalogService& catalogService, Fo
                 break;
             case 3:
             {
-                const int categoryId = readInt("Category ID: ");
-                const std::string categoryName = readLine("Category name: ");
-                catalogService.addCategory(categoryId, categoryName);
-                std::cout << "Category added.\n";
-                break;
-            }
-            case 4:
-            {
                 const int id = readInt("Food ID: ");
                 const std::string name = readLine("Food name: ");
                 const int calories = readInt("Calories per 100g: ");
@@ -130,7 +119,7 @@ void runAdminMenu(const AccountData& account, CatalogService& catalogService, Fo
                 std::cout << "Food added.\n";
                 break;
             }
-            case 5:
+            case 4:
             {
                 const int id = readInt("Food ID: ");
                 const std::string name = readLine("New food name: ");
@@ -143,13 +132,9 @@ void runAdminMenu(const AccountData& account, CatalogService& catalogService, Fo
                 std::cout << "Food updated.\n";
                 break;
             }
-            case 6:
+            case 5:
                 catalogService.removeFood(readInt("Food ID: "));
                 std::cout << "Food deleted.\n";
-                break;
-            case 7:
-                catalogService.removeCategory(readInt("Category ID: "));
-                std::cout << "Category deleted.\n";
                 break;
             case 0:
                 running = false;
@@ -203,11 +188,10 @@ void runUserMenu(const AccountData& account, CatalogService& catalogService, Aut
 int main() {
     try {
         AccountStorage accountStorage(AccountsPath);
-        CategoryStorage categoryStorage(CategoriesPath);
         FoodStorage foodStorage(FoodsPath);
 
         AuthService authService(accountStorage);
-        CatalogService catalogService(foodStorage, categoryStorage);
+        CatalogService catalogService(foodStorage);
         FoodDatabase database(catalogService);
 
         authService.ensureSeedData();
@@ -243,7 +227,33 @@ int main() {
                         const int age = readInt("Age: ");
                         const double weight = readDouble("Weight: ");
                         const double height = readDouble("Height: ");
-                        const int dailyCalories = readInt("Daily calories: ");
+                        
+                        std::cout << "\nGender:\n"
+                                  << "0. Male\n"
+                                  << "1. Female\n";
+                        const int genderInput = readInt("Choice: ");
+                        Gender gender = (genderInput == 1) ? Gender::Female : Gender::Male;
+
+                        std::cout << "\nActivity Level:\n"
+                                  << "0. Sedentary (office job)\n"
+                                  << "1. Light (1-3 workouts/week)\n"
+                                  << "2. Moderate (3-5 workouts/week)\n"
+                                  << "3. Active (6-7 workouts/week)\n"
+                                  << "4. Very Active (physical job or 2x/day workouts)\n";
+                        const int activityInput = readInt("Choice: ");
+                        ActivityLevel activity = static_cast<ActivityLevel>(activityInput >= 0 && activityInput <= 4 ? activityInput : 0);
+
+                        std::cout << "\nGoal:\n"
+                                  << "0. Lose Weight\n"
+                                  << "1. Maintain Weight\n"
+                                  << "2. Gain Weight\n";
+                        const int goalInput = readInt("Choice: ");
+                        Goal goal = static_cast<Goal>(goalInput >= 0 && goalInput <= 2 ? goalInput : 1);
+
+                        const int dailyCalories = CalorieCalculator::getRecommendedCalories(gender, weight, height, age, activity, goal);
+                        std::cout << "\n============================================\n"
+                                  << "--> Calculated daily calories: " << dailyCalories << " kcal <--\n"
+                                  << "============================================\n\n";
 
                         const AccountData account = authService.registerUser(
                             login,
