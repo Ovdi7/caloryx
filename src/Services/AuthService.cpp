@@ -1,6 +1,7 @@
 #include "AuthService.h"
 
 #include <stdexcept>
+#include <ctime>
 
 #include "../Common/FixedText.h"
 #include "../Models/AccountRole.h"
@@ -33,7 +34,9 @@ void AuthService::ensureSeedData() const {
     copyText(demo.passwordHash, AccountData::PasswordHashSize, hashPassword("demo123"));
     demo.role = RoleUser;
     copyText(demo.displayName, AccountData::DisplayNameSize, "Demo User");
-    demo.age = 23;
+    demo.birthYear = 2000;
+    demo.birthMonth = 1;
+    demo.birthDay = 1;
     demo.weight = 70.0;
     demo.height = 175.0;
     demo.dailyCalories = 2200;
@@ -49,7 +52,9 @@ AccountData AuthService::registerUser(
     const std::string& login,
     const std::string& password,
     const std::string& displayName,
-    int age,
+    int birthYear,
+    int birthMonth,
+    int birthDay,
     double weight,
     double height,
     int dailyCalories
@@ -57,8 +62,8 @@ AccountData AuthService::registerUser(
     if (login.empty() || password.empty() || displayName.empty()) {
         throw std::runtime_error("Login, password and display name are required.");
     }
-    if (age <= 0 || weight <= 0.0 || height <= 0.0 || dailyCalories <= 0) {
-        throw std::runtime_error("Profile values must be positive.");
+    if (birthYear <= 1900 || birthMonth < 1 || birthMonth > 12 || birthDay < 1 || birthDay > 31 || weight <= 0.0 || height <= 0.0 || dailyCalories <= 0) {
+        throw std::runtime_error("Profile values must be positive and date must be valid.");
     }
 
     AccountData existing{};
@@ -72,7 +77,9 @@ AccountData AuthService::registerUser(
     copyText(account.passwordHash, AccountData::PasswordHashSize, hashPassword(password));
     account.role = RoleUser;
     copyText(account.displayName, AccountData::DisplayNameSize, displayName);
-    account.age = age;
+    account.birthYear = birthYear;
+    account.birthMonth = birthMonth;
+    account.birthDay = birthDay;
     account.weight = weight;
     account.height = height;
     account.dailyCalories = dailyCalories;
@@ -103,6 +110,21 @@ AccountData AuthService::getAccountById(int id) const {
     return account;
 }
 
+void AuthService::updatePhysicalData(int accountId, double weight, double height, int dailyCalories) const {
+    if (weight <= 0.0 || height <= 0.0 || dailyCalories <= 0) {
+        throw std::runtime_error("Profile values must be positive.");
+    }
+
+    AccountData account = getAccountById(accountId);
+    account.weight = weight;
+    account.height = height;
+    account.dailyCalories = dailyCalories;
+
+    if (!storage.update(account)) {
+        throw std::runtime_error("Failed to update account in storage.");
+    }
+}
+
 std::string AuthService::hashPassword(const std::string& password) {
     const unsigned long long offsetBasis = 1469598103934665603ull;
     const unsigned long long prime = 1099511628211ull;
@@ -114,6 +136,20 @@ std::string AuthService::hashPassword(const std::string& password) {
     }
 
     return std::to_string(hash);
+}
+
+int AuthService::calculateAge(int birthYear, int birthMonth, int birthDay) {
+    std::time_t t = std::time(nullptr);
+    std::tm* now = std::localtime(&t);
+    int currentYear = now->tm_year + 1900;
+    int currentMonth = now->tm_mon + 1;
+    int currentDay = now->tm_mday;
+
+    int age = currentYear - birthYear;
+    if (currentMonth < birthMonth || (currentMonth == birthMonth && currentDay < birthDay)) {
+        age--;
+    }
+    return age;
 }
 
 int AuthService::generateNextId() const {

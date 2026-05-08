@@ -21,13 +21,17 @@ public:
         const std::string& login,
         const std::string& password,
         const std::string& displayName,
-        int age,
+        int birthYear,
+        int birthMonth,
+        int birthDay,
         double weight,
         double height,
         int dailyCalories
     ) const;
     AccountData login(const std::string& login, const std::string& password) const;
     AccountData getAccountById(int id) const;
+    void updatePhysicalData(int accountId, double weight, double height, int dailyCalories) const;
 
     static std::string hashPassword(const std::string& password);
+    static int calculateAge(int birthYear, int birthMonth, int birthDay);
 };

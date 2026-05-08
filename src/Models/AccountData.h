@@ -10,7 +10,9 @@ struct AccountData {
     char passwordHash[PasswordHashSize];
     int role;
     char displayName[DisplayNameSize];
-    int age;
+    int birthYear;
+    int birthMonth;
+    int birthDay;
     double weight;
     double height;
     int dailyCalories;
