@@ -15,6 +15,10 @@ struct ConsumedFoodEntry {
 
 class DailyTracker {
 private:
+    static constexpr double CALORIES_PER_GRAM_PROTEIN = 4.0;
+    static constexpr double CALORIES_PER_GRAM_CARBS = 4.0;
+    static constexpr double CALORIES_PER_GRAM_FAT = 9.0;
+
     double totalCaloriesConsumed = 0.0;
     double totalProteinConsumed = 0.0;
     double totalFatsConsumed = 0.0;
@@ -35,13 +39,13 @@ public:
             // Професійний дієтологічний розрахунок за вагою тіла
             dailyProteinGoal = weight * 1.8; // 1.8 г білка на 1 кг ваги
             dailyFatsGoal = weight * 1.0;    // 1.0 г жиру на 1 кг ваги
-            double remainingCalories = goal - (dailyProteinGoal * 4.0) - (dailyFatsGoal * 9.0);
-            dailyCarbsGoal = (remainingCalories > 0 ? remainingCalories : 0) / 4.0;
+            double remainingCalories = goal - (dailyProteinGoal * CALORIES_PER_GRAM_PROTEIN) - (dailyFatsGoal * CALORIES_PER_GRAM_FAT);
+            dailyCarbsGoal = (remainingCalories > 0 ? remainingCalories : 0) / CALORIES_PER_GRAM_CARBS;
         } else {
             // Запасний варіант (класичний розподіл 20/30/50), якщо вага невідома
-            dailyProteinGoal = (goal * 0.20) / 4.0;
-            dailyFatsGoal = (goal * 0.30) / 9.0;
-            dailyCarbsGoal = (goal * 0.50) / 4.0;
+            dailyProteinGoal = (goal * 0.20) / CALORIES_PER_GRAM_PROTEIN;
+            dailyFatsGoal = (goal * 0.30) / CALORIES_PER_GRAM_FAT;
+            dailyCarbsGoal = (goal * 0.50) / CALORIES_PER_GRAM_CARBS;
         }
     }
 

@@ -1,0 +1,16 @@
+# ninja log v7
+29	787	8009667593889261	CMakeFiles/caloryx.dir/src/Admin/admin.cpp.obj	68ab44adf3d49b95
+38	800	8009667593974598	CMakeFiles/caloryx.dir/src/Food/food.cpp.obj	6c64f4166e881309
+33	856	8009667593927377	CMakeFiles/caloryx.dir/src/Category/category.cpp.obj	c5ac15cc34f2ff99
+49	891	8009667594087836	CMakeFiles/caloryx.dir/src/Meal/meal.cpp.obj	c04693993c482338
+878	1173	8009667602372424	CMakeFiles/caloryx.dir/src/Report/report.cpp.obj	60140117f431586f
+44	1245	8009667594041420	CMakeFiles/caloryx.dir/src/FoodsDatabase/FoodsDatabase.cpp.obj	7728e56c33fffe9b
+792	1409	8009667601539271	CMakeFiles/caloryx.dir/src/Models/CalorieCalculator.cpp.obj	efcb081a8c08855
+1291	1665	8009667606896260	CMakeFiles/caloryx.dir/src/Settings/settings.cpp.obj	78f408944019f34e
+803	1759	8009667601630595	CMakeFiles/caloryx.dir/src/Plan/plan.cpp.obj	cd27817fd463ff7b
+894	1902	8009667602536365	CMakeFiles/caloryx.dir/src/Services/AuthService.cpp.obj	1babc52368faa753
+1232	2181	8009667605970063	CMakeFiles/caloryx.dir/src/Services/CatalogService.cpp.obj	8d2c9fddfcef0a96
+1422	2347	8009667608129557	CMakeFiles/caloryx.dir/src/Storage/AccountStorage.cpp.obj	26122f013f6e13a6
+1670	2388	8009667610608345	CMakeFiles/caloryx.dir/src/User/user.cpp.obj	708e12b10f152bd7
+15	12314	8009667593747719	CMakeFiles/caloryx.dir/src/main.cpp.obj	6fd2320272449746
+12318	12798	8009667716758519	caloryx.exe	569c5ce9df7b058e

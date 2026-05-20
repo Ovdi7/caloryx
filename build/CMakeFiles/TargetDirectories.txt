@@ -1,0 +1,3 @@
+C:/Users/Dima/Desktop/Kursa/build/CMakeFiles/caloryx.dir
+C:/Users/Dima/Desktop/Kursa/build/CMakeFiles/edit_cache.dir
+C:/Users/Dima/Desktop/Kursa/build/CMakeFiles/rebuild_cache.dir
