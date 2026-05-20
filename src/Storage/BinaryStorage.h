@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 #include <stdexcept>
+#include <type_traits>
 
 template <typename T>
 class BinaryStorage {
@@ -11,6 +12,8 @@ private:
     std::string filePath;
 
 public:
+    static_assert(std::is_trivially_copyable<T>::value, "T must be trivially copyable (no std::string or vectors inside) for binary operations.");
+
     explicit BinaryStorage(const std::string& filePath) : filePath(filePath) {}
 
     bool fileExists() const {
@@ -84,7 +87,7 @@ public:
         T record{};
         while (file.read(reinterpret_cast<char*>(&record), sizeof(T))) {
             if (!record.isDeleted && record.id == id) {
-                record.isDeleted = 1; // "М'яке" видалення
+                record.isDeleted = true; // "М'яке" видалення
                 file.seekp(-static_cast<std::streamoff>(sizeof(T)), std::ios::cur);
                 file.write(reinterpret_cast<const char*>(&record), sizeof(T));
                 return true;
