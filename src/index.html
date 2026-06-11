@@ -21,9 +21,9 @@
                         <option value="female">Жінка</option>
                     </select>
                     <div class="flex gap-4">
-                        <input type="number" id="regAge" placeholder="Вік" class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                        <input type="number" id="regHeight" placeholder="Зріст (см)" class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                        <input type="number" id="regWeight" placeholder="Вага (кг)" class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="number" id="regAge"    placeholder="Вік"         class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="number" id="regHeight" placeholder="Зріст (см)"  class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="number" id="regWeight" placeholder="Вага (кг)"   class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
                     <select id="regActivity" class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
                         <option value="sedentary">Мінімальна активність</option>
@@ -33,20 +33,20 @@
                     </select>
                     <div class="bg-gray-800 p-3 rounded-lg space-y-2">
                         <p class="text-sm text-gray-400 mb-2">Мета:</p>
-                        <label class="flex items-center gap-2"><input type="radio" name="goal" value="lose" class="accent-emerald-500"> Схуднути</label>
+                        <label class="flex items-center gap-2"><input type="radio" name="goal" value="lose"     class="accent-emerald-500"> Схуднути</label>
                         <label class="flex items-center gap-2"><input type="radio" name="goal" value="maintain" checked class="accent-emerald-500"> Підтримувати</label>
-                        <label class="flex items-center gap-2"><input type="radio" name="goal" value="gain" class="accent-emerald-500"> Набрати</label>
+                        <label class="flex items-center gap-2"><input type="radio" name="goal" value="gain"     class="accent-emerald-500"> Набрати</label>
                     </div>
                 </div>
                 
-                <input type="email" id="authEmail" placeholder="Email" required class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                <input type="email"    id="authEmail"    placeholder="Email"  required class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
                 <input type="password" id="authPassword" placeholder="Пароль" required class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
                 
                 <button type="submit" id="authSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-lg font-bold shadow-lg transition">Увійти</button>
             </form>
             
             <p class="mt-6 text-center text-sm text-gray-400">
-                <span id="authToggleText">Немає акаунту?</span> 
+                <span id="authToggleText">Немає акаунту?</span>
                 <button type="button" id="authToggleBtn" class="text-emerald-400 hover:text-emerald-300 font-semibold ml-1">Зареєструватись</button>
             </p>
         </div>
@@ -65,8 +65,8 @@
                 <nav class="space-y-4">
                     <button onclick="switchTab('profile')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Профіль</button>
                     <button onclick="switchTab('journal')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Журнал</button>
-                    <button onclick="switchTab('stats')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Статистика</button>
-                    <button onclick="switchTab('about')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Про нас</button>
+                    <button onclick="switchTab('stats')"   class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Статистика</button>
+                    <button onclick="switchTab('about')"   class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Про нас</button>
                 </nav>
             </div>
             <button id="logoutBtn" class="bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg font-bold shadow transition mt-auto">Вихід</button>
@@ -88,20 +88,20 @@
                             <span id="profInitial">U</span>
                         </div>
                         <div class="space-y-2 text-emerald-100 text-lg">
-                            <p><strong class="text-emerald-400">Вік:</strong> <span id="profAge">-</span></p>
-                            <p><strong class="text-emerald-400">Стать:</strong> <span id="profGender">-</span></p>
-                            <p><strong class="text-emerald-400">Зріст:</strong> <span id="profHeight">-</span> см</p>
-                            <p><strong class="text-emerald-400">Вага:</strong> <span id="profWeight">-</span> кг</p>
-                            <p><strong class="text-emerald-400">Мета:</strong> <span id="profGoal">-</span></p>
+                            <p><strong class="text-emerald-400">Вік:</strong>    <span id="profAge">-</span></p>
+                            <p><strong class="text-emerald-400">Стать:</strong>  <span id="profGender">-</span></p>
+                            <p><strong class="text-emerald-400">Зріст:</strong>  <span id="profHeight">-</span> см</p>
+                            <p><strong class="text-emerald-400">Вага:</strong>   <span id="profWeight">-</span> кг</p>
+                            <p><strong class="text-emerald-400">Мета:</strong>   <span id="profGoal">-</span></p>
                         </div>
                     </div>
                     
                     <div class="bg-emerald-900/40 p-8 rounded-2xl shadow-lg border border-emerald-800/50 flex flex-col justify-center items-center text-center">
                         <h3 class="text-2xl font-bold mb-6 text-emerald-400">Добове споживання</h3>
                         <div class="text-4xl font-bold mb-6">
-                            <span id="profConsumedText" class="text-white">0</span> 
-                            <span class="text-2xl text-emerald-500">/</span> 
-                            <span id="profLimitText" class="text-2xl text-emerald-300">2200</span> 
+                            <span id="profConsumedText" class="text-white">0</span>
+                            <span class="text-2xl text-emerald-500">/</span>
+                            <span id="profLimitText" class="text-2xl text-emerald-300">2200</span>
                             <span class="text-lg text-emerald-600">ккал</span>
                         </div>
                         <div class="w-full bg-gray-800 rounded-full h-6 mb-2 overflow-hidden shadow-inner">
@@ -132,19 +132,19 @@
                                 <th class="p-4 rounded-tr-xl font-semibold">Час</th>
                             </tr>
                         </thead>
-                        <tbody id="journalTableBody">
-                        </tbody>
+                        <tbody id="journalTableBody"></tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- Stats -->
+            <!-- ══ ОНОВЛЕНО: Stats ═════════════════════════════════════════════ -->
             <section id="stats" class="space-y-6 hidden">
                 <h2 class="text-3xl font-bold text-emerald-400 border-b border-emerald-800 pb-4">Статистика</h2>
-                <div class="bg-emerald-900/20 p-12 rounded-xl border border-emerald-800/50 shadow-lg flex items-center justify-center min-h-[400px]">
-                    <div class="text-center">
-                        <svg class="w-16 h-16 text-emerald-700 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                        <p class="text-emerald-500 text-lg font-medium">Контейнер-плейсхолдер для майбутнього графіка</p>
+                <div class="bg-emerald-900/20 p-8 rounded-xl border border-emerald-800/50 shadow-lg">
+                    <h3 class="text-lg font-semibold text-emerald-300 mb-6">Калорії за останні 7 днів</h3>
+                    <!-- сюди script.js вставляє графік -->
+                    <div id="statsContent">
+                        <p class="text-emerald-500 text-center py-8">Завантаження...</p>
                     </div>
                 </div>
             </section>
@@ -161,18 +161,42 @@
         </main>
     </div>
     
-    <!-- Modal: Add Product -->
+    <!-- ══ ОНОВЛЕНО: Modal: Add Product (з пошуком) ══════════════════════════ -->
     <div id="productModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm p-4">
         <div class="bg-gray-900 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-emerald-700/50 relative">
             <h3 class="text-2xl font-bold mb-6 text-emerald-400">Додати продукт</h3>
             <form id="addProductForm" class="space-y-4">
-                <input type="text" id="prodName" placeholder="Назва продукту" required class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
-                <div class="flex gap-4">
-                    <input type="number" step="1" id="prodWeight" placeholder="Вага (г)" required class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
-                    <input type="number" step="1" id="prodCal" placeholder="Калорії" required class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+
+                <!-- ── НОВЕ: поле пошуку по базі ── -->
+                <div class="relative">
+                    <input type="text" id="foodSearch"
+                           placeholder="🔍 Знайти продукт у базі..."
+                           oninput="onSearchInput(event)"
+                           autocomplete="off"
+                           class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+                    <!-- Список результатів -->
+                    <div id="searchResults"
+                         class="hidden absolute z-50 left-0 right-0 bg-gray-900 border border-emerald-700 rounded-lg mt-1 shadow-2xl max-h-60 overflow-y-auto">
+                    </div>
                 </div>
-                <input type="text" id="prodCat" placeholder="Категорія" required class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
-                <input type="time" id="prodTime" required class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+
+                <!-- Або заповни вручну -->
+                <p class="text-xs text-gray-500 text-center">або заповни вручну ↓</p>
+
+                <input type="text"   id="prodName" placeholder="Назва продукту" required
+                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+                <div class="flex gap-4">
+                    <!-- ── НОВЕ: oninput для автоперерахунку ── -->
+                    <input type="number" step="1"   id="prodWeight"  placeholder="Вага (г)"  required
+                           oninput="recalcCalories()"
+                           class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+                    <input type="number" step="0.1" id="prodCal"     placeholder="Калорії"   required
+                           class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+                </div>
+                <input type="text"   id="prodCat"  placeholder="Категорія" required
+                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+                <input type="time"   id="prodTime" required
+                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
                 
                 <div class="flex gap-4 mt-6">
                     <button type="button" onclick="closeProductModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg font-bold transition">Скасувати</button>
