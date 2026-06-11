@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caloryx</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans antialiased">
+
+<!-- ЕКРАН АВТОРИЗАЦІЇ -->
+<div id="authScreen" class="min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl">
+        <h2 id="authTitle" class="text-3xl font-bold text-center text-white mb-6">Вхід</h2>
+        <form id="authForm">
+            <!-- Поля тільки для реєстрації -->
+            <div id="registerFields" class="hidden space-y-4 mb-4">
+                <input type="text" id="regName" placeholder="Ваше ім'я"
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="regAge" placeholder="Вік"
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg">
+                    <select id="regGender" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg">
+                        <option value="male">Чоловік</option>
+                        <option value="female">Жінка</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="regHeight" placeholder="Зріст (см)"
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg">
+                    <input type="number" id="regWeight" placeholder="Вага (кг)"
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg">
+                </div>
+                <select id="regActivity" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg">
+                    <option value="sedentary">Сидячий спосіб життя</option>
+                    <option value="light">Легка активність (1–3/тижд)</option>
+                    <option value="moderate">Середня (3–5/тижд)</option>
+                    <option value="active">Висока (6–7/тижд)</option>
+                </select>
+                <p class="text-sm text-gray-400">Ваша мета:</p>
+                <div class="flex justify-around">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="goal" value="lose" class="accent-indigo-500"> Схуднути
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="goal" value="maintain" checked class="accent-indigo-500"> Підтримати
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="goal" value="gain" class="accent-indigo-500"> Набрати
+                    </label>
+                </div>
+            </div>
+            <!-- Основні поля -->
+            <div class="space-y-4">
+                <input type="email" id="authEmail" placeholder="Email" required
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <input type="password" id="authPassword" placeholder="Пароль" required
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <button id="authSubmitBtn" type="submit"
+                class="w-full mt-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+                Увійти
+            </button>
+        </form>
+        <p class="text-center text-sm text-gray-400 mt-4">
+            <span id="authToggleText">Немає акаунту?</span>
+            <button id="authToggleBtn" class="font-medium text-indigo-400 hover:text-indigo-300 ml-1">
+                Зареєструватись
+            </button>
+        </p>
+    </div>
+</div>
+
+<!-- ОСНОВНИЙ ІНТЕРФЕЙС -->
+<div id="mainLayout" class="hidden">
+    <!-- Навбар -->
+    <nav class="bg-gray-800 shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center">
+            <span class="text-white text-xl font-extrabold tracking-wider">CALORYX</span>
+            <div class="flex items-center gap-6">
+                <button onclick="switchTab('profile')" class="text-gray-300 hover:text-white font-medium transition">Профіль</button>
+                <button onclick="switchTab('journal')" class="text-gray-300 hover:text-white font-medium transition">Щоденник</button>
+                <button onclick="switchTab('meals')"   class="text-gray-300 hover:text-white font-medium transition">Мої страви</button>
+                <button id="logoutBtn" class="text-indigo-400 hover:text-indigo-300 font-medium transition">Вийти</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-10 px-4">
+
+        <!-- ── ПРОФІЛЬ ── -->
+        <section id="profile-section" class="tab-content hidden">
+            <h1 class="text-3xl font-bold text-white mb-8">Мій профіль</h1>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Картка юзера -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col items-center">
+                    <div id="profInitial"
+                        class="w-24 h-24 bg-indigo-600 rounded-full flex items-center justify-center text-4xl font-bold text-white mb-4">
+                    </div>
+                    <h2 id="profName" class="text-2xl font-bold text-white mb-4"></h2>
+                    <div class="w-full space-y-2 text-gray-300 text-sm">
+                        <p><span class="text-gray-400">Вік:</span> <span id="profAge"></span></p>
+                        <p><span class="text-gray-400">Стать:</span> <span id="profGender"></span></p>
+                        <p><span class="text-gray-400">Зріст:</span> <span id="profHeight"></span> см</p>
+                        <p><span class="text-gray-400">Вага:</span> <span id="profWeight"></span> кг</p>
+                        <p><span class="text-gray-400">Мета:</span> <span id="profGoal"></span></p>
+                    </div>
+                </div>
+                <!-- Калорії сьогодні -->
+                <div class="md:col-span-2 bg-gray-800 p-8 rounded-xl border border-gray-700">
+                    <h3 class="text-xl font-semibold text-white mb-6">Спожито сьогодні</h3>
+                    <div class="flex justify-between mb-2 text-sm text-gray-400">
+                        <span>Спожито: <span id="profConsumedText" class="text-indigo-400 font-bold text-lg">0</span> ккал</span>
+                        <span>Норма: <span id="profLimitText">0</span> ккал</span>
+                    </div>
+                    <div class="h-4 bg-gray-700 rounded-full overflow-hidden mb-2">
+                        <div id="profProgressBar" style="width:0%" class="h-full bg-indigo-500 transition-all duration-500 rounded-full"></div>
+                    </div>
+                    <p class="text-sm text-gray-400">
+                        Залишилось: <span id="profRemainingText" class="text-green-400 font-semibold">0</span> ккал
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── ЩОДЕННИК ── -->
+        <section id="journal-section" class="tab-content hidden">
+            <h1 class="text-3xl font-bold text-white mb-8">Щоденник харчування</h1>
+
+            <!-- Форма додавання -->
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-6">
+                <h2 class="text-lg font-semibold mb-4 text-gray-200">Додати запис</h2>
+                <form id="addJournalEntryForm" class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                    <div class="relative md:col-span-2">
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Продукт</label>
+                        <input type="text" id="productSearch" autocomplete="off"
+                            placeholder="Почніть вводити..."
+                            class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <ul id="diaryAutocompleteList"
+                            class="absolute z-10 w-full bg-gray-800 mt-1 rounded-lg shadow-xl max-h-48 overflow-y-auto hidden border border-gray-600">
+                        </ul>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Вага (г)</label>
+                        <input type="number" id="productWeight" value="100"
+                            class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Калорії</label>
+                        <input type="number" id="productCalories" readonly
+                            class="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-gray-400 cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Час</label>
+                        <input type="time" id="productTime"
+                            class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg">
+                    </div>
+                    <button type="submit"
+                        class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+                        Додати
+                    </button>
+                </form>
+            </div>
+
+            <!-- Таблиця -->
+            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                <div class="p-4 flex justify-between items-center border-b border-gray-700">
+                    <h3 class="text-base font-semibold text-gray-200">Записи за дату</h3>
+                    <input type="date" id="journalDate"
+                        class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-1 text-sm text-gray-200">
+                </div>
+                <p id="journalEmpty" class="hidden text-center text-gray-500 py-10">За цю дату записів немає</p>
+                <table class="min-w-full">
+                    <thead class="bg-gray-700/40">
+                        <tr>
+                            <th class="p-4 text-left text-xs font-semibold text-gray-400 uppercase">Продукт</th>
+                            <th class="p-4 text-left text-xs font-semibold text-gray-400 uppercase">Вага</th>
+                            <th class="p-4 text-left text-xs font-semibold text-gray-400 uppercase">Ккал</th>
+                            <th class="p-4 text-left text-xs font-semibold text-gray-400 uppercase">Час</th>
+                        </tr>
+                    </thead>
+                    <tbody id="journalTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ── МОЇ СТРАВИ ── -->
+        <section id="meals-section" class="tab-content hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-white">Мої страви</h1>
+                <button onclick="openMealModal()"
+                    class="px-5 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Створити страву
+                </button>
+            </div>
+            <p id="mealsEmpty" class="hidden text-center text-gray-500 py-10">Ще немає збережених страв</p>
+            <div id="mealsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+    </main>
+</div>
+
+<!-- МОДАЛЬНЕ ВІКНО: Конструктор страви -->
+<div id="createMealModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 w-full max-w-lg shadow-2xl">
+        <div class="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+            <h3 class="text-xl font-bold text-white">Конструктор страви</h3>
+            <button onclick="closeMealModal()" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
+        </div>
+        <div class="p-6 space-y-4">
+            <input type="text" id="newMealName" placeholder="Назва страви"
+                class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <div class="relative">
+                <input type="text" id="mealIngredientSearch" autocomplete="off" placeholder="Пошук інгредієнта..."
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <ul id="mealAutocompleteList"
+                    class="absolute z-20 w-full bg-gray-800 mt-1 rounded-lg shadow-xl max-h-48 overflow-y-auto hidden border border-gray-600">
+                </ul>
+            </div>
+            <ul id="addedIngredientsList"
+                class="bg-gray-900 rounded-lg border border-gray-700 min-h-[64px] p-3 space-y-1">
+            </ul>
+            <div class="bg-gray-700 rounded-lg p-4 grid grid-cols-4 gap-2 text-center text-sm">
+                <div><div class="text-gray-400">Ккал</div><div class="text-indigo-400 font-bold text-lg" id="mealTotalCal">0</div></div>
+                <div><div class="text-gray-400">Білки</div><div class="text-green-400 font-bold" id="mealTotalPro">0</div></div>
+                <div><div class="text-gray-400">Жири</div><div class="text-yellow-400 font-bold" id="mealTotalFat">0</div></div>
+                <div><div class="text-gray-400">Вуглев</div><div class="text-orange-400 font-bold" id="mealTotalCar">0</div></div>
+            </div>
+            <button onclick="saveMeal()"
+                class="w-full py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition">
+                Зберегти страву
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
