@@ -3,217 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор Калорій</title>
+    <title>Калорії</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-emerald-100 font-sans min-h-screen flex">
 
-    <!-- Auth Screen -->
-    <div id="authScreen" class="w-full flex items-center justify-center min-h-screen p-4">
-        <div class="bg-emerald-800/30 p-8 rounded-xl shadow-2xl w-full max-w-md border border-emerald-700/50">
-            <h2 id="authTitle" class="text-3xl font-bold mb-6 text-center text-emerald-400">Вхід</h2>
-            
-            <form id="authForm" class="space-y-4">
-                <div id="registerFields" class="hidden space-y-4">
-                    <input type="text" id="regName" placeholder="Ім'я" class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                    <select id="regGender" class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                        <option value="male">Чоловік</option>
-                        <option value="female">Жінка</option>
-                    </select>
-                    <div class="flex gap-4">
-                        <input type="number" id="regAge"    placeholder="Вік"         class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                        <input type="number" id="regHeight" placeholder="Зріст (см)"  class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                        <input type="number" id="regWeight" placeholder="Вага (кг)"   class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                    </div>
-                    <select id="regActivity" class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                        <option value="sedentary">Мінімальна активність</option>
-                        <option value="light">Легкі тренування</option>
-                        <option value="moderate">Помірні тренування</option>
-                        <option value="active">Інтенсивні тренування</option>
-                    </select>
-                    <div class="bg-gray-800 p-3 rounded-lg space-y-2">
-                        <p class="text-sm text-gray-400 mb-2">Мета:</p>
-                        <label class="flex items-center gap-2"><input type="radio" name="goal" value="lose"     class="accent-emerald-500"> Схуднути</label>
-                        <label class="flex items-center gap-2"><input type="radio" name="goal" value="maintain" checked class="accent-emerald-500"> Підтримувати</label>
-                        <label class="flex items-center gap-2"><input type="radio" name="goal" value="gain"     class="accent-emerald-500"> Набрати</label>
-                    </div>
-                </div>
-                
-                <input type="email"    id="authEmail"    placeholder="Email"  required class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                <input type="password" id="authPassword" placeholder="Пароль" required class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                
-                <button type="submit" id="authSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-lg font-bold shadow-lg transition">Увійти</button>
-            </form>
-            
-            <p class="mt-6 text-center text-sm text-gray-400">
-                <span id="authToggleText">Немає акаунту?</span>
-                <button type="button" id="authToggleBtn" class="text-emerald-400 hover:text-emerald-300 font-semibold ml-1">Зареєструватись</button>
-            </p>
-        </div>
-    </div>
+<!-- ══ AUTH SCREEN ══════════════════════════════════════════════════════════ -->
+<div id="authScreen" class="w-full flex items-center justify-center min-h-screen p-4">
+    <div class="bg-emerald-800/30 p-8 rounded-xl shadow-2xl w-full max-w-md border border-emerald-700/50">
+        <h2 id="authTitle" class="text-3xl font-bold mb-6 text-center text-emerald-400">Вхід</h2>
 
-    <!-- Main Layout -->
-    <div id="mainLayout" class="hidden w-full flex min-h-screen">
-        
-        <!-- Sidebar -->
-        <aside class="w-64 bg-emerald-800 p-6 flex flex-col justify-between shadow-2xl z-10">
-            <div>
-                <div class="flex items-center gap-3 mb-10">
-                    <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-xl font-bold">K</div>
-                    <h1 class="text-2xl font-bold text-white tracking-wide">Калорії</h1>
+        <form id="authForm" class="space-y-4">
+            <!-- Поля реєстрації -->
+            <div id="registerFields" class="hidden space-y-4">
+                <input type="text" id="regName" placeholder="Ім'я"
+                       class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                <select id="regGender" class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                    <option value="male">Чоловік</option>
+                    <option value="female">Жінка</option>
+                </select>
+                <div class="flex gap-3">
+                    <!-- РІК НАРОДЖЕННЯ замість віку -->
+                    <input type="number" id="regBirthYear" placeholder="Рік народж." min="1920" max="2015"
+                           class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="number" id="regHeight" placeholder="Зріст (см)"
+                           class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="number" id="regWeight" placeholder="Вага (кг)"
+                           class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
-                <nav class="space-y-4">
-                    <button onclick="switchTab('profile')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Профіль</button>
-                    <button onclick="switchTab('journal')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Журнал</button>
-                    <button onclick="switchTab('stats')"   class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Статистика</button>
-                    <button onclick="switchTab('about')"   class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Про нас</button>
-                </nav>
+                <select id="regActivity" class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                    <option value="sedentary">Мінімальна активність</option>
+                    <option value="light">Легкі тренування</option>
+                    <option value="moderate">Помірні тренування</option>
+                    <option value="active">Інтенсивні тренування</option>
+                </select>
+                <div class="bg-gray-800 p-3 rounded-lg space-y-2">
+                    <p class="text-sm text-gray-400 mb-2">Мета:</p>
+                    <label class="flex items-center gap-2"><input type="radio" name="goal" value="lose"     class="accent-emerald-500"> Схуднути</label>
+                    <label class="flex items-center gap-2"><input type="radio" name="goal" value="maintain" checked class="accent-emerald-500"> Підтримувати</label>
+                    <label class="flex items-center gap-2"><input type="radio" name="goal" value="gain"     class="accent-emerald-500"> Набрати</label>
+                </div>
             </div>
-            <button id="logoutBtn" class="bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg font-bold shadow transition mt-auto">Вихід</button>
-        </aside>
 
-        <!-- Content -->
-        <main class="flex-1 p-8 overflow-y-auto bg-gray-900">
-            
-            <!-- Profile -->
-            <section id="profile" class="space-y-8 hidden">
-                <div class="flex items-center justify-between border-b border-emerald-800 pb-4">
-                    <h2 class="text-3xl font-bold text-emerald-400">Профіль</h2>
-                    <button onclick="openProductModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-bold shadow transition">Додати продукт</button>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-emerald-900/40 p-8 rounded-2xl shadow-lg border border-emerald-800/50 flex items-center gap-6">
-                        <div class="w-24 h-24 bg-emerald-600 rounded-full flex items-center justify-center text-4xl font-bold text-white shadow-inner">
-                            <span id="profInitial">U</span>
-                        </div>
-                        <div class="space-y-2 text-emerald-100 text-lg">
-                            <p><strong class="text-emerald-400">Вік:</strong>    <span id="profAge">-</span></p>
-                            <p><strong class="text-emerald-400">Стать:</strong>  <span id="profGender">-</span></p>
-                            <p><strong class="text-emerald-400">Зріст:</strong>  <span id="profHeight">-</span> см</p>
-                            <p><strong class="text-emerald-400">Вага:</strong>   <span id="profWeight">-</span> кг</p>
-                            <p><strong class="text-emerald-400">Мета:</strong>   <span id="profGoal">-</span></p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-emerald-900/40 p-8 rounded-2xl shadow-lg border border-emerald-800/50 flex flex-col justify-center items-center text-center">
-                        <h3 class="text-2xl font-bold mb-6 text-emerald-400">Добове споживання</h3>
-                        <div class="text-4xl font-bold mb-6">
-                            <span id="profConsumedText" class="text-white">0</span>
-                            <span class="text-2xl text-emerald-500">/</span>
-                            <span id="profLimitText" class="text-2xl text-emerald-300">2200</span>
-                            <span class="text-lg text-emerald-600">ккал</span>
-                        </div>
-                        <div class="w-full bg-gray-800 rounded-full h-6 mb-2 overflow-hidden shadow-inner">
-                            <div id="profProgressBar" class="bg-emerald-500 h-6 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <input type="email"    id="authEmail"    placeholder="Email"  required
+                   class="w-full p-3 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
 
-            <!-- Journal -->
-            <section id="journal" class="space-y-6 hidden">
-                <div class="flex justify-between items-center border-b border-emerald-800 pb-4">
-                    <h2 class="text-3xl font-bold text-emerald-400">Журнал</h2>
-                    <div class="flex gap-4">
-                        <input type="date" id="journalDate" class="bg-gray-800 text-emerald-100 p-2 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 border border-emerald-800">
-                        <button onclick="openProductModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-bold shadow transition">Додати продукт</button>
-                    </div>
-                </div>
-                
-                <div class="overflow-x-auto bg-emerald-900/20 rounded-xl border border-emerald-800/50 shadow-lg">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-emerald-800/50 text-emerald-200">
-                                <th class="p-4 rounded-tl-xl font-semibold">Продукт</th>
-                                <th class="p-4 font-semibold">Кількість (г)</th>
-                                <th class="p-4 font-semibold">Ккал</th>
-                                <th class="p-4 font-semibold">Категорія</th>
-                                <th class="p-4 rounded-tr-xl font-semibold">Час</th>
-                            </tr>
-                        </thead>
-                        <tbody id="journalTableBody"></tbody>
-                    </table>
-                </div>
-            </section>
+            <!-- ПАРОЛЬ із кнопкою показати/приховати -->
+            <div class="relative">
+                <input type="password" id="authPassword" placeholder="Пароль" required
+                       class="w-full p-3 pr-12 bg-gray-800 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                <button type="button" id="togglePassBtn" onclick="togglePassword()"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-400 text-lg">👁</button>
+            </div>
 
-            <!-- ══ ОНОВЛЕНО: Stats ═════════════════════════════════════════════ -->
-            <section id="stats" class="space-y-6 hidden">
-                <h2 class="text-3xl font-bold text-emerald-400 border-b border-emerald-800 pb-4">Статистика</h2>
-                <div class="bg-emerald-900/20 p-8 rounded-xl border border-emerald-800/50 shadow-lg">
-                    <h3 class="text-lg font-semibold text-emerald-300 mb-6">Калорії за останні 7 днів</h3>
-                    <!-- сюди script.js вставляє графік -->
-                    <div id="statsContent">
-                        <p class="text-emerald-500 text-center py-8">Завантаження...</p>
-                    </div>
-                </div>
-            </section>
+            <button type="submit" id="authSubmitBtn"
+                    class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-lg font-bold shadow-lg transition">Увійти</button>
+        </form>
 
-            <!-- About -->
-            <section id="about" class="space-y-6 hidden">
-                <h2 class="text-3xl font-bold text-emerald-400 border-b border-emerald-800 pb-4">Про нас</h2>
-                <div class="bg-emerald-900/20 p-8 rounded-xl border border-emerald-800/50 shadow-lg text-emerald-100 text-lg leading-relaxed">
-                    <p>Наша місія — надати зручний, швидкий та надійний інструмент для контролю вашого харчування та досягнення фітнес-цілей. 
-                    Ми віримо, що свідомий підхід до щоденного раціону є ключем до здорового та активного життя.</p>
-                </div>
-            </section>
-
-        </main>
+        <p class="mt-6 text-center text-sm text-gray-400">
+            <span id="authToggleText">Немає акаунту?</span>
+            <button type="button" id="authToggleBtn"
+                    class="text-emerald-400 hover:text-emerald-300 font-semibold ml-1">Зареєструватись</button>
+        </p>
     </div>
-    
-    <!-- ══ ОНОВЛЕНО: Modal: Add Product (з пошуком) ══════════════════════════ -->
-    <div id="productModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div class="bg-gray-900 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-emerald-700/50 relative">
-            <h3 class="text-2xl font-bold mb-6 text-emerald-400">Додати продукт</h3>
-            <form id="addProductForm" class="space-y-4">
+</div>
 
-                <!-- ── НОВЕ: поле пошуку по базі ── -->
-                <div class="relative">
-                    <input type="text" id="foodSearch"
-                           placeholder="🔍 Знайти продукт у базі..."
-                           oninput="onSearchInput(event)"
-                           autocomplete="off"
-                           class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
-                    <!-- Список результатів -->
-                    <div id="searchResults"
-                         class="hidden absolute z-50 left-0 right-0 bg-gray-900 border border-emerald-700 rounded-lg mt-1 shadow-2xl max-h-60 overflow-y-auto">
+<!-- ══ MAIN LAYOUT ══════════════════════════════════════════════════════════ -->
+<div id="mainLayout" class="hidden w-full flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-emerald-800 p-6 flex flex-col justify-between shadow-2xl z-10">
+        <div>
+            <div class="flex items-center gap-3 mb-10">
+                <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-xl font-bold">K</div>
+                <h1 class="text-2xl font-bold text-white tracking-wide">Калорії</h1>
+            </div>
+            <nav class="space-y-4">
+                <button onclick="switchTab('profile')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Профіль</button>
+                <button onclick="switchTab('journal')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Журнал</button>
+                <button onclick="switchTab('stats')"   class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Статистика</button>
+                <button onclick="switchTab('about')"   class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 font-semibold transition">Про нас</button>
+            </nav>
+        </div>
+        <button id="logoutBtn" class="bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg font-bold shadow transition">Вихід</button>
+    </aside>
+
+    <!-- Content -->
+    <main class="flex-1 p-8 overflow-y-auto bg-gray-900">
+
+        <!-- ── ПРОФІЛЬ ──────────────────────────────────────────────────── -->
+        <section id="profile" class="space-y-8 hidden">
+            <div class="flex items-center justify-between border-b border-emerald-800 pb-4">
+                <h2 class="text-3xl font-bold text-emerald-400">Профіль</h2>
+                <div class="flex gap-3">
+                    <button onclick="openEditModal()"
+                            class="bg-gray-700 hover:bg-gray-600 text-white px-5 py-2 rounded-lg font-bold shadow transition">✏️ Редагувати</button>
+                    <button onclick="openProductModal()"
+                            class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-bold shadow transition">+ Додати продукт</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Дані користувача -->
+                <div class="bg-emerald-900/40 p-8 rounded-2xl shadow-lg border border-emerald-800/50 flex items-center gap-6">
+                    <div class="w-24 h-24 bg-emerald-600 rounded-full flex items-center justify-center text-4xl font-bold text-white shadow-inner">
+                        <span id="profInitial">U</span>
+                    </div>
+                    <div class="space-y-2 text-emerald-100 text-lg">
+                        <p><strong class="text-emerald-400">Вік:</strong>       <span id="profAge">-</span> р.</p>
+                        <p><strong class="text-emerald-400">Стать:</strong>     <span id="profGender">-</span></p>
+                        <p><strong class="text-emerald-400">Зріст:</strong>     <span id="profHeight">-</span> см</p>
+                        <p><strong class="text-emerald-400">Вага:</strong>      <span id="profWeight">-</span> кг</p>
+                        <p><strong class="text-emerald-400">Активність:</strong><span id="profActivity">-</span></p>
+                        <p><strong class="text-emerald-400">Мета:</strong>      <span id="profGoal">-</span></p>
                     </div>
                 </div>
 
-                <!-- Або заповни вручну -->
-                <p class="text-xs text-gray-500 text-center">або заповни вручну ↓</p>
+                <!-- Калорії + БЖВ -->
+                <div class="bg-emerald-900/40 p-8 rounded-2xl shadow-lg border border-emerald-800/50 flex flex-col justify-center items-center text-center gap-4">
+                    <h3 class="text-2xl font-bold text-emerald-400">Добове споживання</h3>
+                    <div class="text-4xl font-bold">
+                        <span id="profConsumedText" class="text-white">0</span>
+                        <span class="text-2xl text-emerald-500">/</span>
+                        <span id="profLimitText" class="text-2xl text-emerald-300">2200</span>
+                        <span class="text-lg text-emerald-600">ккал</span>
+                    </div>
+                    <div class="w-full bg-gray-800 rounded-full h-6 overflow-hidden shadow-inner">
+                        <div id="profProgressBar" class="bg-emerald-500 h-6 rounded-full transition-all duration-700" style="width:0%"></div>
+                    </div>
+                    <!-- БЖВ сьогодні -->
+                    <div class="flex gap-6 mt-2 text-sm">
+                        <div class="text-center">
+                            <div class="text-blue-300 font-bold text-xl" id="profProtein">0</div>
+                            <div class="text-gray-400">Білки г</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-yellow-300 font-bold text-xl" id="profFat">0</div>
+                            <div class="text-gray-400">Жири г</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-orange-300 font-bold text-xl" id="profCarbs">0</div>
+                            <div class="text-gray-400">Вуглев г</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                <input type="text"   id="prodName" placeholder="Назва продукту" required
-                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+        <!-- ── ЖУРНАЛ ───────────────────────────────────────────────────── -->
+        <section id="journal" class="space-y-6 hidden">
+            <div class="flex justify-between items-center border-b border-emerald-800 pb-4">
+                <h2 class="text-3xl font-bold text-emerald-400">Журнал</h2>
                 <div class="flex gap-4">
-                    <!-- ── НОВЕ: oninput для автоперерахунку ── -->
-                    <input type="number" step="1"   id="prodWeight"  placeholder="Вага (г)"  required
-                           oninput="recalcCalories()"
-                           class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
-                    <input type="number" step="0.1" id="prodCal"     placeholder="Калорії"   required
-                           class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+                    <input type="date" id="journalDate"
+                           class="bg-gray-800 text-emerald-100 p-2 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 border border-emerald-800">
+                    <button onclick="openProductModal()"
+                            class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-bold shadow transition">+ Додати</button>
                 </div>
-                <input type="text"   id="prodCat"  placeholder="Категорія" required
-                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
-                <input type="time"   id="prodTime" required
-                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
-                
-                <div class="flex gap-4 mt-6">
-                    <button type="button" onclick="closeProductModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg font-bold transition">Скасувати</button>
-                    <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-lg font-bold shadow-lg transition">Зберегти</button>
+            </div>
+
+            <div class="overflow-x-auto bg-emerald-900/20 rounded-xl border border-emerald-800/50 shadow-lg">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-emerald-800/50 text-emerald-200">
+                            <th class="p-4 rounded-tl-xl">Продукт</th>
+                            <th class="p-4">Вага</th>
+                            <th class="p-4">Ккал</th>
+                            <th class="p-4 text-blue-300">Білки</th>
+                            <th class="p-4 text-yellow-300">Жири</th>
+                            <th class="p-4 text-orange-300">Вуглев</th>
+                            <th class="p-4 rounded-tr-xl"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="journalTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Підсумок за день -->
+            <div id="journalSummary" class="hidden bg-emerald-900/30 rounded-xl border border-emerald-700/50 p-5">
+                <h3 class="text-emerald-400 font-bold mb-3">Підсумок за день</h3>
+                <div class="flex gap-8 text-lg">
+                    <div><span class="text-gray-400">Калорії:</span> <strong class="text-emerald-300" id="sumCal">0</strong> ккал</div>
+                    <div><span class="text-gray-400">Білки:</span>   <strong class="text-blue-300"    id="sumProt">0</strong> г</div>
+                    <div><span class="text-gray-400">Жири:</span>    <strong class="text-yellow-300"  id="sumFat">0</strong> г</div>
+                    <div><span class="text-gray-400">Вуглев:</span>  <strong class="text-orange-300"  id="sumCarbs">0</strong> г</div>
                 </div>
-            </form>
-        </div>
-    </div>
+            </div>
+        </section>
 
-    <!-- Modal: Alert -->
-    <div id="alertModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div id="alertBox" class="bg-gray-900 p-8 rounded-2xl shadow-2xl w-full max-w-sm border text-center border-emerald-500">
-            <h3 id="alertMsg" class="text-xl font-bold mb-6 text-emerald-400">Повідомлення</h3>
-            <button onclick="closeAlert()" class="bg-gray-700 hover:bg-gray-600 text-white px-8 py-2 rounded-lg font-bold transition">ОК</button>
-        </div>
-    </div>
+        <!-- ── СТАТИСТИКА ────────────────────────────────────────────────── -->
+        <section id="stats" class="space-y-6 hidden">
+            <h2 class="text-3xl font-bold text-emerald-400 border-b border-emerald-800 pb-4">Статистика</h2>
+            <div class="bg-emerald-900/20 p-8 rounded-xl border border-emerald-800/50 shadow-lg">
+                <h3 class="text-lg font-semibold text-emerald-300 mb-6">Калорії за останні 7 днів</h3>
+                <div id="statsContent"><p class="text-emerald-500 text-center py-8">Завантаження...</p></div>
+            </div>
+        </section>
 
-    <script src="script.js"></script>
+        <!-- ── ПРО НАС ───────────────────────────────────────────────────── -->
+        <section id="about" class="space-y-6 hidden">
+            <h2 class="text-3xl font-bold text-emerald-400 border-b border-emerald-800 pb-4">Про нас</h2>
+            <div class="bg-emerald-900/20 p-8 rounded-xl border border-emerald-800/50 shadow-lg text-emerald-100 text-lg leading-relaxed">
+                <p>Наша місія — надати зручний, швидкий та надійний інструмент для контролю вашого харчування та досягнення фітнес-цілей.</p>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- ══ MODAL: Редагування профілю ══════════════════════════════════════════ -->
+<div id="editModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+    <div class="bg-gray-900 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-emerald-700/50">
+        <h3 class="text-2xl font-bold mb-6 text-emerald-400">Редагувати профіль</h3>
+        <form id="editProfileForm" class="space-y-4">
+            <input type="text"   id="editName"      placeholder="Ім'я"
+                   class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+            <div class="flex gap-3">
+                <input type="number" id="editBirthYear" placeholder="Рік народж." min="1920" max="2015"
+                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+                <input type="number" id="editHeight"    placeholder="Зріст (см)"
+                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+                <input type="number" id="editWeight"    placeholder="Вага (кг)"
+                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+            </div>
+            <select id="editActivity" class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+                <option value="sedentary">Мінімальна активність</option>
+                <option value="light">Легкі тренування</option>
+                <option value="moderate">Помірні тренування</option>
+                <option value="active">Інтенсивні тренування</option>
+            </select>
+            <div class="bg-gray-800 p-3 rounded-lg space-y-2">
+                <p class="text-sm text-gray-400 mb-1">Мета:</p>
+                <label class="flex items-center gap-2"><input type="radio" name="editGoal" value="lose"     class="accent-emerald-500"> Схуднути</label>
+                <label class="flex items-center gap-2"><input type="radio" name="editGoal" value="maintain" class="accent-emerald-500"> Підтримувати</label>
+                <label class="flex items-center gap-2"><input type="radio" name="editGoal" value="gain"     class="accent-emerald-500"> Набрати</label>
+            </div>
+            <div class="flex gap-4 mt-6">
+                <button type="button" onclick="closeEditModal()"
+                        class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg font-bold transition">Скасувати</button>
+                <button type="submit"
+                        class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-lg font-bold shadow-lg transition">Зберегти</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ══ MODAL: Додати продукт ════════════════════════════════════════════════ -->
+<div id="productModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+    <div class="bg-gray-900 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-emerald-700/50">
+        <h3 class="text-2xl font-bold mb-6 text-emerald-400">Додати продукт</h3>
+        <form id="addProductForm" class="space-y-4">
+            <!-- Пошук -->
+            <div class="relative">
+                <input type="text" id="foodSearch" placeholder="🔍 Знайти у базі..."
+                       oninput="onSearchInput(event)" autocomplete="off"
+                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+                <div id="searchResults"
+                     class="hidden absolute z-50 left-0 right-0 bg-gray-900 border border-emerald-700 rounded-lg mt-1 shadow-2xl max-h-60 overflow-y-auto"></div>
+            </div>
+            <p class="text-xs text-gray-500 text-center">або заповни вручну ↓</p>
+
+            <input type="text"   id="prodName" placeholder="Назва продукту" required
+                   class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+            <div class="flex gap-4">
+                <input type="number" step="1"   id="prodWeight" placeholder="Вага (г)" required
+                       oninput="recalcCalories()"
+                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+                <input type="number" step="0.1" id="prodCal"    placeholder="Калорії"  required
+                       class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+            </div>
+            <input type="text" id="prodCat" placeholder="Категорія" required
+                   class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+            <input type="time" id="prodTime" required
+                   class="w-full p-3 bg-gray-800 rounded-lg text-emerald-100 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700">
+
+            <div class="flex gap-4 mt-6">
+                <button type="button" onclick="closeProductModal()"
+                        class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg font-bold transition">Скасувати</button>
+                <button type="submit"
+                        class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-lg font-bold shadow-lg transition">Зберегти</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ══ MODAL: Alert ══════════════════════════════════════════════════════════ -->
+<div id="alertModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+    <div id="alertBox" class="bg-gray-900 p-8 rounded-2xl shadow-2xl w-full max-w-sm border text-center border-emerald-500">
+        <h3 id="alertMsg" class="text-xl font-bold mb-6 text-emerald-400">Повідомлення</h3>
+        <button onclick="closeAlert()" class="bg-gray-700 hover:bg-gray-600 text-white px-8 py-2 rounded-lg font-bold transition">ОК</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>

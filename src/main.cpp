@@ -24,6 +24,7 @@ struct User {
     double weight;
     char activity_level[32];
     char goal[32];
+    int birth_year; // НОВЕ ПОЛЕ
 };
 
 struct Product {
@@ -35,6 +36,9 @@ struct Product {
     char category[64];
     char time[16];
     char date[16];
+    double protein;  // НОВЕ ПОЛЕ
+    double fat;      // НОВЕ ПОЛЕ
+    double carbs;    // НОВЕ ПОЛЕ
 };
 
 template<typename T>
@@ -60,9 +64,26 @@ void appendBinary(const std::string& filename, const T& item) {
     }
 }
 
+template<typename T>
+void writeBinary(const std::string& filename, const std::vector<T>& items) {
+    std::ofstream out(filename, std::ios::binary | std::ios::trunc);
+    if (out) {
+        for (const auto& item : items)
+            out.write(reinterpret_cast<const char*>(&item), sizeof(T));
+    }
+}
+
 void copyStr(char* dest, const std::string& src, size_t max_len) {
     std::strncpy(dest, src.c_str(), max_len - 1);
     dest[max_len - 1] = '\0';
+}
+
+// Обчислити вік з року народження
+int calcAge(int birth_year) {
+    auto t  = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    int current_year = tm.tm_year + 1900;
+    return current_year - birth_year;
 }
 
 int main() {
@@ -70,7 +91,7 @@ int main() {
     auto& cors = app.get_middleware<crow::CORSHandler>();
     cors.global()
         .headers("*")
-        .methods("POST"_method, "GET"_method, "OPTIONS"_method)
+        .methods("POST"_method, "GET"_method, "PUT"_method, "DELETE"_method, "OPTIONS"_method)
         .origin("*");
 
     // ── /api/register ───────────────────────────────────────────────────────
@@ -85,9 +106,10 @@ int main() {
         copyStr(u.email,          body["email"].s(),          sizeof(u.email));
         copyStr(u.password,       body["password"].s(),       sizeof(u.password));
         copyStr(u.gender,         body["gender"].s(),         sizeof(u.gender));
-        u.age    = body["age"].i();
-        u.height = body["height"].d();
-        u.weight = body["weight"].d();
+        u.birth_year = body["birth_year"].i();
+        u.age        = calcAge(u.birth_year);
+        u.height     = body["height"].d();
+        u.weight     = body["weight"].d();
         copyStr(u.activity_level, body["activity_level"].s(), sizeof(u.activity_level));
         copyStr(u.goal,           body["goal"].s(),           sizeof(u.goal));
 
@@ -98,6 +120,7 @@ int main() {
         res["name"]           = std::string(u.name);
         res["email"]          = std::string(u.email);
         res["age"]            = u.age;
+        res["birth_year"]     = u.birth_year;
         res["height"]         = u.height;
         res["weight"]         = u.weight;
         res["gender"]         = std::string(u.gender);
@@ -121,7 +144,8 @@ int main() {
                 res["id"]             = u.id;
                 res["name"]           = std::string(u.name);
                 res["email"]          = std::string(u.email);
-                res["age"]            = u.age;
+                res["age"]            = calcAge(u.birth_year > 0 ? u.birth_year : (2024 - u.age));
+                res["birth_year"]     = u.birth_year;
                 res["height"]         = u.height;
                 res["weight"]         = u.weight;
                 res["gender"]         = std::string(u.gender);
@@ -131,6 +155,104 @@ int main() {
             }
         }
         return crow::response(401, "Unauthorized");
+    });
+
+    // ── /api/profile (GET) ──────────────────────────────────────────────────
+    CROW_ROUTE(app, "/api/profile").methods("GET"_method)([](const crow::request& req) {
+        char* uid_cstr = req.url_params.get("user_id");
+        if (!uid_cstr) return crow::response(400, "Missing user_id");
+        int user_id = std::stoi(uid_cstr);
+
+        auto users = readBinary<User>(USERS_FILE);
+        User* found_user = nullptr;
+        for (auto& u : users) {
+            if (u.id == user_id) { found_user = &u; break; }
+        }
+        if (!found_user) return crow::response(404, "User not found");
+
+        // Вік рахуємо з року народження якщо є
+        int age = (found_user->birth_year > 0)
+                  ? calcAge(found_user->birth_year)
+                  : found_user->age;
+
+        Gender g = (std::string(found_user->gender) == "female") ? Gender::Female : Gender::Male;
+
+        ActivityLevel a = ActivityLevel::Sedentary;
+        std::string act(found_user->activity_level);
+        if      (act == "light")    a = ActivityLevel::Light;
+        else if (act == "moderate") a = ActivityLevel::Moderate;
+        else if (act == "active")   a = ActivityLevel::Active;
+
+        Goal gl = Goal::MaintainWeight;
+        std::string goal_str(found_user->goal);
+        if      (goal_str == "lose") gl = Goal::LoseWeight;
+        else if (goal_str == "gain") gl = Goal::GainWeight;
+
+        int limit = CalorieCalculator::getRecommendedCalories(
+            g, found_user->weight, found_user->height, age, a, gl);
+
+        auto t  = std::time(nullptr);
+        auto tm = *std::localtime(&t);
+        std::ostringstream oss;
+        oss << std::put_time(&tm, "%Y-%m-%d");
+        std::string today = oss.str();
+
+        double consumed = 0, totalProtein = 0, totalFat = 0, totalCarbs = 0;
+        auto products = readBinary<Product>(PRODUCTS_FILE);
+        for (const auto& p : products) {
+            if (p.user_id == user_id && std::string(p.date) == today) {
+                consumed     += p.calories;
+                totalProtein += p.protein;
+                totalFat     += p.fat;
+                totalCarbs   += p.carbs;
+            }
+        }
+
+        crow::json::wvalue res;
+        res["name"]           = std::string(found_user->name);
+        res["age"]            = age;
+        res["birth_year"]     = found_user->birth_year;
+        res["gender"]         = std::string(found_user->gender);
+        res["height"]         = found_user->height;
+        res["weight"]         = found_user->weight;
+        res["goal"]           = std::string(found_user->goal);
+        res["activity_level"] = std::string(found_user->activity_level);
+        res["dailyLimit"]     = limit;
+        res["consumedToday"]  = consumed;
+        res["proteinToday"]   = totalProtein;
+        res["fatToday"]       = totalFat;
+        res["carbsToday"]     = totalCarbs;
+        return crow::response(200, res);
+    });
+
+    // ── /api/profile/update (PUT) — НОВИЙ ───────────────────────────────────
+    CROW_ROUTE(app, "/api/profile/update").methods("PUT"_method)([](const crow::request& req) {
+        auto body = crow::json::load(req.body);
+        if (!body) return crow::response(400, "Invalid JSON");
+
+        int user_id = body["user_id"].i();
+        auto users  = readBinary<User>(USERS_FILE);
+
+        bool found = false;
+        for (auto& u : users) {
+            if (u.id == user_id) {
+                if (body.has("name"))           copyStr(u.name,           body["name"].s(),           sizeof(u.name));
+                if (body.has("height"))         u.height     = body["height"].d();
+                if (body.has("weight"))         u.weight     = body["weight"].d();
+                if (body.has("activity_level")) copyStr(u.activity_level, body["activity_level"].s(), sizeof(u.activity_level));
+                if (body.has("goal"))           copyStr(u.goal,           body["goal"].s(),           sizeof(u.goal));
+                if (body.has("birth_year")) {
+                    u.birth_year = body["birth_year"].i();
+                    u.age        = calcAge(u.birth_year);
+                }
+                found = true;
+                break;
+            }
+        }
+        if (!found) return crow::response(404, "User not found");
+
+        writeBinary(USERS_FILE, users);
+        return crow::response(200, "Updated");
     });
 
     // ── /api/journal (GET) ──────────────────────────────────────────────────
@@ -154,6 +276,9 @@ int main() {
                 item["calories"] = p.calories;
                 item["category"] = std::string(p.category);
                 item["time"]     = std::string(p.time);
+                item["protein"]  = p.protein;
+                item["fat"]      = p.fat;
+                item["carbs"]    = p.carbs;
                 items.push_back(std::move(item));
             }
         }
@@ -175,78 +300,43 @@ int main() {
         copyStr(p.category, body["category"].s(), sizeof(p.category));
         copyStr(p.time,     body["time"].s(),     sizeof(p.time));
         copyStr(p.date,     body["date"].s(),     sizeof(p.date));
+        p.protein  = body.has("protein") ? body["protein"].d() : 0.0;
+        p.fat      = body.has("fat")     ? body["fat"].d()     : 0.0;
+        p.carbs    = body.has("carbs")   ? body["carbs"].d()   : 0.0;
 
         appendBinary(PRODUCTS_FILE, p);
         return crow::response(200, "OK");
     });
 
-    // ── /api/profile (GET) ──────────────────────────────────────────────────
-    CROW_ROUTE(app, "/api/profile").methods("GET"_method)([](const crow::request& req) {
-        char* uid_cstr = req.url_params.get("user_id");
-        if (!uid_cstr) return crow::response(400, "Missing user_id");
-        int user_id = std::stoi(uid_cstr);
+    // ── /api/journal/delete (DELETE) — НОВИЙ ────────────────────────────────
+    CROW_ROUTE(app, "/api/journal/delete").methods("DELETE"_method)([](const crow::request& req) {
+        auto body = crow::json::load(req.body);
+        if (!body) return crow::response(400, "Invalid JSON");
 
-        auto users = readBinary<User>(USERS_FILE);
-        User* found_user = nullptr;
-        for (auto& u : users) {
-            if (u.id == user_id) { found_user = &u; break; }
-        }
-        if (!found_user) return crow::response(404, "User not found");
+        int product_id = body["id"].i();
+        int user_id    = body["user_id"].i();
 
-        Gender g = (std::string(found_user->gender) == "female") ? Gender::Female : Gender::Male;
-
-        ActivityLevel a = ActivityLevel::Sedentary;
-        std::string act(found_user->activity_level);
-        if      (act == "light")    a = ActivityLevel::Light;
-        else if (act == "moderate") a = ActivityLevel::Moderate;
-        else if (act == "active")   a = ActivityLevel::Active;
-
-        Goal gl = Goal::MaintainWeight;
-        std::string goal_str(found_user->goal);
-        if      (goal_str == "lose") gl = Goal::LoseWeight;
-        else if (goal_str == "gain") gl = Goal::GainWeight;
-
-        int limit = CalorieCalculator::getRecommendedCalories(
-            g, found_user->weight, found_user->height, found_user->age, a, gl);
-
-        auto t  = std::time(nullptr);
-        auto tm = *std::localtime(&t);
-        std::ostringstream oss;
-        oss << std::put_time(&tm, "%Y-%m-%d");
-        std::string today = oss.str();
-
-        double consumed = 0;
         auto products = readBinary<Product>(PRODUCTS_FILE);
-        for (const auto& p : products) {
-            if (p.user_id == user_id && std::string(p.date) == today)
-                consumed += p.calories;
-        }
+        auto before   = products.size();
 
-        crow::json::wvalue res;
-        res["name"]          = std::string(found_user->name);
-        res["age"]           = found_user->age;
-        res["gender"]        = std::string(found_user->gender);
-        res["height"]        = found_user->height;
-        res["weight"]        = found_user->weight;
-        res["goal"]          = std::string(found_user->goal);
-        res["dailyLimit"]    = limit;
-        res["consumedToday"] = consumed;
-        return crow::response(200, res);
+        products.erase(std::remove_if(products.begin(), products.end(),
+            [&](const Product& p) {
+                return p.id == product_id && p.user_id == user_id;
+            }), products.end());
+
+        if (products.size() == before)
+            return crow::response(404, "Not found");
+
+        writeBinary(PRODUCTS_FILE, products);
+        return crow::response(200, "Deleted");
     });
 
-    // ── /api/catalog (GET) — НОВИЙ ──────────────────────────────────────────
-    // Повертає всі продукти бази; фільтрує за ?query=назва (необов'язково)
+    // ── /api/catalog (GET) ──────────────────────────────────────────────────
     CROW_ROUTE(app, "/api/catalog").methods("GET"_method)([](const crow::request& req) {
         struct CatalogItem {
-            int id;
-            const char* name;
-            int caloriesPer100g;
-            double protein;
-            double fat;
-            double carbs;
-            const char* category;
+            int id; const char* name; int caloriesPer100g;
+            double protein; double fat; double carbs; const char* category;
         };
-
         static const CatalogItem catalog[] = {
             {1,  "Яблуко",               52,  0.3,  0.2,  14.0, "Фрукти"},
             {2,  "Банан",                96,  1.3,  0.3,  27.0, "Фрукти"},
@@ -269,18 +359,44 @@ int main() {
             {11, "Оливкова олія",        884,  0.0,100.0,   0.0, "Горіхи та жири"},
         };
 
+        // UTF-8 lowercase для кирилиці (двобайтні символи А-Я → а-я)
+        auto utf8Lower = [](const std::string& s) -> std::string {
+            std::string out;
+            out.reserve(s.size());
+            for (size_t i = 0; i < s.size(); ) {
+                unsigned char c0 = s[i];
+                if (c0 == 0xD0 && i + 1 < s.size()) {
+                    unsigned char c1 = (unsigned char)s[i+1];
+                    // А-П (0xD090–0xD09F) → а-п (0xD0B0–0xD0BF)
+                    if (c1 >= 0x90 && c1 <= 0x9F) { out += (char)0xD0; out += (char)(c1 + 0x20); i += 2; continue; }
+                    // Р-Я (0xD0A0–0xD0AF) → р-я (0xD180–0xD18F)
+                    if (c1 >= 0xA0 && c1 <= 0xAF) { out += (char)0xD1; out += (char)(c1 - 0x20); i += 2; continue; }
+                    // Є (0xD084) → є (0xD194), І (0xD086) → і (0xD196), Ї (0xD087) → ї (0xD197)
+                    if (c1 == 0x84) { out += (char)0xD1; out += (char)0x94; i += 2; continue; }
+                    if (c1 == 0x86) { out += (char)0xD1; out += (char)0x96; i += 2; continue; }
+                    if (c1 == 0x87) { out += (char)0xD1; out += (char)0x97; i += 2; continue; }
+                }
+                if (c0 == 0xD1 && i + 1 < s.size()) {
+                    unsigned char c1 = (unsigned char)s[i+1];
+                    // А (0xD090 already handled), spare uppercase Р-Я via D1
+                    // lowercase pass-through for а-я which are already D0B0–D18F
+                    out += (char)c0; out += (char)c1; i += 2; continue;
+                }
+                // ASCII
+                out += (char)::tolower(c0); i++;
+            }
+            return out;
+        };
+
         std::string query;
         if (auto q = req.url_params.get("query")) {
-            query = q;
-            std::transform(query.begin(), query.end(), query.begin(), ::tolower);
+            query = utf8Lower(q);
         }
 
         std::vector<crow::json::wvalue> results;
         for (const auto& item : catalog) {
-            std::string nameLower = item.name;
-            std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);
-
-            if (query.empty() || nameLower.find(query) != std::string::npos) {
+            std::string nl = utf8Lower(item.name);
+            if (query.empty() || nl.find(query) != std::string::npos) {
                 crow::json::wvalue w;
                 w["id"]              = item.id;
                 w["name"]            = item.name;
@@ -295,8 +411,7 @@ int main() {
         return crow::response(200, crow::json::wvalue(results));
     });
 
-    // ── /api/stats (GET) — НОВИЙ ────────────────────────────────────────────
-    // Повертає калорії за кожен день для юзера (для графіка статистики)
+    // ── /api/stats (GET) ────────────────────────────────────────────────────
     CROW_ROUTE(app, "/api/stats").methods("GET"_method)([](const crow::request& req) {
         char* uid_cstr = req.url_params.get("user_id");
         if (!uid_cstr) return crow::response(400, "Missing user_id");
